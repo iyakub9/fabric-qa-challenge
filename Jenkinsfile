@@ -5,10 +5,6 @@ pipeline {
     nodejs 'Node 20'
   }
 
-  environment {
-    CI = 'true'
-  }
-
   stages {
     stage('Install dependencies') {
       steps {
@@ -17,18 +13,6 @@ pipeline {
             sh 'npm ci'
           } else {
             bat 'npm ci'
-          }
-        }
-      }
-    }
-
-    stage('Install Playwright browsers') {
-      steps {
-        script {
-          if (isUnix()) {
-            sh 'npx playwright install --with-deps'
-          } else {
-            bat 'npx playwright install'
           }
         }
       }
@@ -46,14 +30,26 @@ pipeline {
       }
     }
 
+    stage('Build HTML report') {
+      steps {
+        script {
+          if (isUnix()) {
+            sh 'npx playwright show-report --no-open'
+          } else {
+            bat 'npx playwright show-report --no-open'
+          }
+        }
+      }
+    }
+
     stage('Publish HTML report') {
       steps {
         publishHTML(target: [
           reportDir: 'playwright-report',
           reportFiles: 'index.html',
           reportName: 'Playwright Report',
-          alwaysLinkToLastBuild: true,
           keepAll: true,
+          alwaysLinkToLastBuild: true,
           allowMissing: false
         ])
       }
@@ -62,7 +58,7 @@ pipeline {
 
   post {
     always {
-      archiveArtifacts artifacts: '**/test-results/**/*.*', allowEmptyArchive: true
+      archiveArtifacts artifacts: 'test-results/**/*.*', allowEmptyArchive: true
     }
   }
 }

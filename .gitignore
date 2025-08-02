@@ -12,7 +12,7 @@ build/
 # Playwright test results
 test-results/
 playwright-report/
-*.zip  # Optional: exclude generated zip packages
+*.zip
 
 # VSCode settings (if you use VSCode)
 .vscode/
