@@ -1,0 +1,39 @@
+# Node.js modules and logs
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build artifacts
+dist/
+out/
+build/
+
+# Playwright test results
+test-results/
+playwright-report/
+*.zip  # Optional: exclude generated zip packages
+
+# VSCode settings (if you use VSCode)
+.vscode/
+
+# Environment/config files (if used)
+.env
+.env.local
+.env.*.local
+
+# OS-specific
+.DS_Store        # macOS
+Thumbs.db        # Windows
+*.swp            # Vim
+
+# Coverage
+coverage/
+coverage-final.json
+lcov-report/
+
+# TypeScript compiled output
+*.tsbuildinfo
+
+# Jenkins
+.jenkins/

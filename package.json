@@ -1,0 +1,14 @@
+{
+  "name": "fabric-qa-challenge",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "npx playwright test",
+    "report": "npx playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.1",
+    "@types/node": "^24.1.0",
+    "dotenv": "^16.3.1",
+    "typescript": "^5.4.5"
+  }
+}
