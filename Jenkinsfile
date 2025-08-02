@@ -5,6 +5,10 @@ pipeline {
     nodejs 'Node 20'
   }
 
+  environment {
+    CI = 'true'
+  }
+
   stages {
     stage('Install dependencies') {
       steps {
@@ -18,7 +22,19 @@ pipeline {
       }
     }
 
-    stage('Run tests') {
+    stage('Install Playwright Browsers') {
+      steps {
+        script {
+          if (isUnix()) {
+            sh 'npx playwright install --with-deps'
+          } else {
+            bat 'npx playwright install'
+          }
+        }
+      }
+    }
+
+    stage('Run Tests') {
       steps {
         script {
           if (isUnix()) {
@@ -30,15 +46,15 @@ pipeline {
       }
     }
 
-    stage('Publish HTML report') {
+    stage('Publish Playwright Report') {
       steps {
         publishHTML([
-          reportDir: 'playwright-report',
-          reportFiles: 'index.html',
-          reportName: 'Playwright Report',
           allowMissing: false,
           alwaysLinkToLastBuild: true,
-          keepAll: true
+          keepAll: true,
+          reportDir: 'playwright-report',
+          reportFiles: 'index.html',
+          reportName: 'Playwright Report'
         ])
       }
     }
