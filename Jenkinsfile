@@ -13,11 +13,7 @@ pipeline {
     stage('Install dependencies') {
       steps {
         script {
-          if (isUnix()) {
-            sh 'npm ci'
-          } else {
-            bat 'npm ci'
-          }
+          bat 'npm ci'
         }
       }
     }
@@ -25,11 +21,7 @@ pipeline {
     stage('Install Playwright Browsers') {
       steps {
         script {
-          if (isUnix()) {
-            sh 'npx playwright install --with-deps'
-          } else {
-            bat 'npx playwright install'
-          }
+          bat 'npx playwright install'
         }
       }
     }
@@ -37,10 +29,28 @@ pipeline {
     stage('Run Tests') {
       steps {
         script {
-          if (isUnix()) {
-            sh 'npx playwright test --reporter=html'
-          } else {
-            bat 'npx playwright test --reporter=html'
+          bat 'npx playwright test --reporter=html'
+        }
+      }
+    }
+
+    stage('Wait for Report Build') {
+      steps {
+        script {
+          def timeout = 5
+          def reportPath = 'playwright-report\\index.html'
+
+          for (int i = 0; i < timeout; i++) {
+            if (fileExists(reportPath)) {
+              echo "Report is ready: ${reportPath}"
+              break
+            }
+            echo "Waiting for report to be ready... (${i + 1}s)"
+            sleep time: 1, unit: 'SECONDS'
+          }
+
+          if (!fileExists(reportPath)) {
+            error("Playwright HTML report not found after waiting.")
           }
         }
       }
