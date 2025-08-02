@@ -22,21 +22,9 @@ pipeline {
       steps {
         script {
           if (isUnix()) {
-            sh 'npx playwright test --reporter=html'
+            sh 'npx playwright test --reporter=html && sleep 1'
           } else {
-            bat 'npx playwright test --reporter=html'
-          }
-        }
-      }
-    }
-
-    stage('Build HTML report') {
-      steps {
-        script {
-          if (isUnix()) {
-            sh 'npx playwright show-report'
-          } else {
-            bat 'npx playwright show-report'
+            bat 'npx playwright test --reporter=html && timeout /t 1 > NUL'
           }
         }
       }
@@ -48,9 +36,8 @@ pipeline {
           reportDir: 'playwright-report',
           reportFiles: 'index.html',
           reportName: 'Playwright Report',
-          keepAll: true,
           alwaysLinkToLastBuild: true,
-          allowMissing: false
+          keepAll: true
         ])
       }
     }
