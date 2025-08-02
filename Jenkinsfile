@@ -22,32 +22,34 @@ pipeline {
       }
     }
 
-    stage('Run Tests') {
+    stage('Run Playwright Tests') {
       steps {
         bat 'npx playwright test --reporter=html'
       }
     }
 
+    stage('Wait for Report Build') {
+      steps {
+        script {
+          echo 'Waiting for Playwright report to finish writing...'
+          sleep time: 2, unit: 'SECONDS'
+          if (!fileExists('playwright-report\\index.html')) {
+            error('❌ Playwright report not found after waiting.')
+          }
+        }
+      }
+    }
+
     stage('Publish Playwright Report') {
       steps {
-        sleep time: 2, unit: 'SECONDS'
-
         publishHTML([
           reportDir: 'playwright-report',
-          reportFiles: 'redirect.html',
-          reportName: 'Playwright Report',
+          reportFiles: 'index.html',
+          reportName: 'Playwright Test Report',
           keepAll: true,
           alwaysLinkToLastBuild: true,
           allowMissing: false
         ])
-      }
-    }
-
-    stage('Add Build Link to Report') {
-      steps {
-        script {
-          currentBuild.description = '<a href="artifact/playwright-report/index.html">📊 View Playwright Report</a>'
-        }
       }
     }
   }
