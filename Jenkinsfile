@@ -34,9 +34,9 @@ pipeline {
       steps {
         script {
           if (isUnix()) {
-            sh 'npx playwright show-report --no-open'
+            sh 'npx playwright show-report'
           } else {
-            bat 'npx playwright show-report --no-open'
+            bat 'npx playwright show-report'
           }
         }
       }
