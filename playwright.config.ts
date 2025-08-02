@@ -5,6 +5,7 @@ dotenv.config();
 export default defineConfig({
     testDir: './tests',
     retries: process.env.CI ? 2 : 1,
+    reporter: [['html', { outputFolder: 'playwright-report', open: 'never' }]],
     workers: 5,
     timeout: 30000,
     use: {
