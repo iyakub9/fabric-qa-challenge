@@ -22,6 +22,18 @@ pipeline {
       }
     }
 
+    stage('Install Playwright browsers') {
+      steps {
+        script {
+          if (isUnix()) {
+            sh 'npx playwright install --with-deps'
+          } else {
+            bat 'npx playwright install'
+          }
+        }
+      }
+    }
+
     stage('Run tests') {
       steps {
         script {
