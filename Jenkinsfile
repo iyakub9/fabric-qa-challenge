@@ -24,22 +24,30 @@ pipeline {
 
     stage('Run Tests') {
       steps {
-        bat 'npx playwright test'
+        bat 'npx playwright test --reporter=html'
       }
     }
 
-    stage('Archive Playwright HTML Report') {
+    stage('Publish Playwright Report') {
       steps {
         sleep time: 2, unit: 'SECONDS'
 
         publishHTML([
           reportDir: 'playwright-report',
-          reportFiles: 'index.html',
+          reportFiles: 'redirect.html',
           reportName: 'Playwright Report',
           keepAll: true,
           alwaysLinkToLastBuild: true,
           allowMissing: false
         ])
+      }
+    }
+
+    stage('Add Build Link to Report') {
+      steps {
+        script {
+          currentBuild.description = '<a href="artifact/playwright-report/index.html">📊 View Playwright Report</a>'
+        }
       }
     }
   }

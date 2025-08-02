@@ -11,7 +11,8 @@ build/
 
 # Playwright test results
 test-results/
-playwright-report/
+playwright-report/*
+!playwright-report/redirect.html
 *.zip
 
 # VSCode settings (if you use VSCode)
