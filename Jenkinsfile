@@ -22,9 +22,9 @@ pipeline {
       steps {
         script {
           if (isUnix()) {
-            sh 'npx playwright test --reporter=html && sleep 1'
+            sh 'npx playwright test --reporter=html'
           } else {
-            bat 'npx playwright test --reporter=html && timeout /t 1 > NUL'
+            bat 'npx playwright test --reporter=html'
           }
         }
       }
@@ -32,10 +32,11 @@ pipeline {
 
     stage('Publish HTML report') {
       steps {
-        publishHTML(target: [
+        publishHTML([
           reportDir: 'playwright-report',
           reportFiles: 'index.html',
           reportName: 'Playwright Report',
+          allowMissing: false,
           alwaysLinkToLastBuild: true,
           keepAll: true
         ])
