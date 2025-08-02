@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   tools {
-    nodejs 'Node 20'
+    nodejs 'Node_20'
   }
 
   environment {
@@ -12,14 +12,25 @@ pipeline {
   stages {
     stage('Install dependencies') {
       steps {
-        sh 'npm ci'
-        sh 'npx playwright install --with-deps'
+        script {
+          if (isUnix()) {
+            sh 'npm ci'
+          } else {
+            bat 'npm ci'
+          }
+        }
       }
     }
 
     stage('Run tests') {
       steps {
-        sh 'npx playwright test --reporter=html'
+        script {
+          if (isUnix()) {
+            sh 'npx playwright test --reporter=html'
+          } else {
+            bat 'npx playwright test --reporter=html'
+          }
+        }
       }
     }
 
@@ -28,7 +39,9 @@ pipeline {
         publishHTML(target: [
           reportDir: 'playwright-report',
           reportFiles: 'index.html',
-          reportName: 'Playwright Test Report'
+          reportName: 'Playwright Report',
+          alwaysLinkToLastBuild: true,
+          keepAll: true
         ])
       }
     }
@@ -36,7 +49,7 @@ pipeline {
 
   post {
     always {
-      archiveArtifacts artifacts: 'playwright-report/**/*.*', fingerprint: true
+      archiveArtifacts artifacts: '**/test-results/**/*.*', allowEmptyArchive: true
     }
   }
 }
