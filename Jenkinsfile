@@ -34,13 +34,24 @@ pipeline {
       }
     }
 
-    stage('Build Playwright Report') {
+    stage('Wait for HTML report to finish writing') {
       steps {
         script {
-          bat 'npx playwright show-report --no-open'
           def reportPath = 'playwright-report\\index.html'
+          def retries = 10
+          def delay = 1
+
+          for (int i = 0; i < retries; i++) {
+            if (fileExists(reportPath)) {
+              echo "HTML report is ready at ${reportPath}"
+              break
+            }
+            echo "Waiting for report file... (${i + 1}s)"
+            sleep time: delay, unit: 'SECONDS'
+          }
+
           if (!fileExists(reportPath)) {
-            error("Playwright HTML report was not generated.")
+            error("Playwright report was not found at ${reportPath} after waiting.")
           }
         }
       }
