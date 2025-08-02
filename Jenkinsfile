@@ -24,7 +24,7 @@ pipeline {
 
     stage('Run Playwright Tests') {
       steps {
-        bat 'npx playwright test --reporter=html,junit'
+        bat 'npx playwright test --reporter=html'
       }
     }
 
@@ -33,7 +33,7 @@ pipeline {
         script {
           echo 'Waiting for Playwright report to finish writing...'
           sleep time: 2, unit: 'SECONDS'
-          if (!fileExists('playwright-report/index.html')) {
+          if (!fileExists('playwright-report\\index.html')) {
             error('❌ Playwright report not found after waiting.')
           }
         }
@@ -50,9 +50,6 @@ pipeline {
           alwaysLinkToLastBuild: true,
           allowMissing: false
         ])
-        script {
-          echo "🔗 View report directly: ${env.BUILD_URL}artifact/playwright-report/index.html"
-        }
       }
     }
   }
@@ -60,8 +57,6 @@ pipeline {
   post {
     always {
       archiveArtifacts artifacts: 'test-results/**/*.*', allowEmptyArchive: true
-      archiveArtifacts artifacts: 'playwright-report/**/*.*', allowEmptyArchive: true
-      junit 'test-results/**/*.xml'
     }
   }
 }
