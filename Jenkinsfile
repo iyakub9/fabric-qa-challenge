@@ -53,7 +53,8 @@ pipeline {
           reportFiles: 'index.html',
           reportName: 'Playwright Report',
           alwaysLinkToLastBuild: true,
-          keepAll: true
+          keepAll: true,
+          allowMissing: false
         ])
       }
     }
