@@ -46,7 +46,6 @@ fabric-qa-challenge/
 ## 🔁 Retrying Failed Tests
 
 ```ts
-// In playwright.config.ts
 retries: process.env.CI ? 2 : 1
 ```
 
